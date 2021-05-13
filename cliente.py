@@ -35,9 +35,9 @@ if response == "go":
         print("wins", wins)
         print("ties", ties)
         print("loses", loses)
-        if wins >= 3:
+        if wins >= 3 or loses >= 3:
             print("Ganaste")
-            game = input("Desea jugar de nuevo? Y/N")
+            game = input("Desea jugar de nuevo? Y/N: ")
             if game == "N":
                 flag = False
                 sCliente.send("END".encode())

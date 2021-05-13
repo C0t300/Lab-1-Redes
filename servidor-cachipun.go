@@ -76,11 +76,14 @@ func main() {
 			s, _ := net.ResolveUDPAddr("udp4", NEWPORT)
 			con, _ := net.ListenUDP("udp4", s)
 			n, addr, _ := con.ReadFromUDP(buf)
-			for strings.TrimSpace(string(buf[0:n])) != "close" {
+			flag := strings.TrimSpace(string(buf[0:n])) != "close"
+			for flag {
 				if strings.TrimSpace(string(buf[0:n])) == "play" {
 					msg := []byte(cachipun())
 					_, err = con.WriteToUDP(msg, addr)
 				}
+				n, addr, _ = con.ReadFromUDP(buf)
+				flag = strings.TrimSpace(string(buf[0:n])) != "close"
 			}
 
 		} else {
