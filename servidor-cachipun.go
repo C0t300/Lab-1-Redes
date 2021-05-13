@@ -2,13 +2,45 @@ package main
 
 import (
 	"fmt"
+	"math/rand"
 	"net"
+	"strconv"
 	"strings"
+	"time"
 )
+
+func randomInt(max int, min int) int {
+	rand.Seed(time.Now().UnixNano())
+	return rand.Intn(max-min) + min // range is min to max
+}
+
+func true80Percent() bool {
+	a := randomInt(11, 1)
+	if a <= 8 {
+		fmt.Println("true80 TRUE")
+		return true
+	}
+	fmt.Println("true80 FALSE")
+	return false
+}
+
+func cachipun() string {
+	var r int = randomInt(4, 1)
+	if r == 1 {
+		return "tijera"
+	} else if r == 2 {
+		return "papel"
+	} else if r == 3 {
+		return "piedra"
+	} else {
+		fmt.Println("uh oh")
+		return "false"
+	}
+}
 
 func main() {
 
-	PUERTO := ":50100"
+	PUERTO := ":50102"
 	BUF := 1024
 
 	s, err := net.ResolveUDPAddr("udp4", PUERTO)
@@ -23,24 +55,38 @@ func main() {
 		return
 	}
 
-	defer con.Close()
+	fmt.Println("Cachipun escuchando en ", PUERTO)
+
 	buf := make([]byte, BUF)
 
-	for {
-		n, addr, err := con.ReadFromUDP(buf)
-		fmt.Println(string(buf[0 : n-1]))
+	n, addr, err := con.ReadFromUDP(buf)
 
-		if strings.TrimSpace(string(buf[0:n])) == "STOP" {
-			fmt.Println("Saliendo del Servidor")
-			return
-		}
+	fmt.Println("Recibido mensaje ", string(buf))
 
-		msg := []byte("Hola de welta")
-		fmt.Println("Exit: ", string(msg))
-		_, err = con.WriteToUDP(msg, addr)
-		if err != nil {
-			fmt.Println(err)
-			return
+	if strings.TrimSpace(string(buf[0:n])) == "game" {
+		fmt.Println("inside if")
+		if true80Percent() {
+			NEWPORT := ":" + strconv.Itoa(randomInt(50200, 50100))
+			fmt.Println("Nuevo puerto ", NEWPORT)
+			msg := []byte("OK|" + NEWPORT)
+			_, err = con.WriteToUDP(msg, addr)
+			fmt.Println("Mensaje enviado ", string(buf))
+			con.Close()
+			s, _ := net.ResolveUDPAddr("udp4", NEWPORT)
+			con, _ := net.ListenUDP("udp4", s)
+			n, addr, _ := con.ReadFromUDP(buf)
+			for strings.TrimSpace(string(buf[0:n])) != "close" {
+				if strings.TrimSpace(string(buf[0:n])) == "play" {
+					msg := []byte(cachipun())
+					_, err = con.WriteToUDP(msg, addr)
+				}
+			}
+
+		} else {
+			msg := []byte("NO")
+			fmt.Println("No disponible")
+			_, err = con.WriteToUDP(msg, addr)
 		}
+		return
 	}
 }
