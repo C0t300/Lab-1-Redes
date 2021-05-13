@@ -20,14 +20,18 @@ if response == "go":
         send = input("Ingrese jugada: ")
         sCliente.send(send.encode())
         response = sCliente.recv(2048).decode()
+        print("response:", response)
         bot, resultado = response.split("|")
         print("El bot jugó", bot)
         if resultado == "win":
             print("Ganaste")
+            wins += 1
         elif resultado == "tie":
             print("Empataste")
+            ties += 1
         elif resultado == "lose":
             print("Perdiste")
+            loses += 1
         print("wins", wins)
         print("ties", ties)
         print("loses", loses)

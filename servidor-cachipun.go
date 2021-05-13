@@ -66,9 +66,10 @@ func main() {
 	if strings.TrimSpace(string(buf[0:n])) == "game" {
 		fmt.Println("inside if")
 		if true80Percent() {
-			NEWPORT := ":" + strconv.Itoa(randomInt(50200, 50100))
+			NEWPORT := strconv.Itoa(randomInt(50200, 50100))
 			fmt.Println("Nuevo puerto ", NEWPORT)
 			msg := []byte("OK|" + NEWPORT)
+			NEWPORT = ":" + NEWPORT
 			_, err = con.WriteToUDP(msg, addr)
 			fmt.Println("Mensaje enviado ", string(buf))
 			con.Close()

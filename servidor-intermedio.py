@@ -24,7 +24,7 @@ def startCachipun():
 
 def runCachipun(port):
     serverAddr = "localhost"
-    serverPort = port
+    serverPort = int(port)
 
     cSocket = skt.socket(skt.AF_INET, skt.SOCK_DGRAM)
 
@@ -37,7 +37,7 @@ def runCachipun(port):
 
 def closeCachipun(port):
     serverAddr = "localhost"
-    serverPort = port
+    serverPort = int(port)
 
     cSocket = skt.socket(skt.AF_INET, skt.SOCK_DGRAM)
 
