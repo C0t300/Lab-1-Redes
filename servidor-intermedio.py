@@ -91,7 +91,10 @@ while run:
                 send = bot + "|" + win
                 cSocket.send(send.encode())
                 msg = cSocket.recv(2048).decode()
+            closeCachipun(port)
+            run = False
         else:
             cSocket.send("notGO".encode())
+            run = False
 
 cSocket.close()

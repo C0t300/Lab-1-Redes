@@ -85,6 +85,7 @@ func main() {
 				n, addr, _ = con.ReadFromUDP(buf)
 				flag = strings.TrimSpace(string(buf[0:n])) != "close"
 			}
+			return
 
 		} else {
 			msg := []byte("NO")
